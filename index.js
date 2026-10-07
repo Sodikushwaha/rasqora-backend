@@ -63,11 +63,7 @@ app.use("/vendors", vendorRoutes);
 app.use("/firms", firmRoutes);
 app.use("/products", productRoutes);
 
-// app.get("/", (req, res) => {
-//   res.json({
-//     message: "<h1>Welcome to RasQora API</h1>"
-//   });
-// });
+
 
 app.get("/", (req, res) => {
   res.send("<h1>Welcome to RasQora Restaurant</h1>");
