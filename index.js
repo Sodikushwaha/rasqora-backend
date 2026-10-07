@@ -32,7 +32,7 @@ app.use("/products", productRoutes);
 
 
 app.get("/", (req, res) => {
-  res.send("<h1>Welcome to RasQora Restaurant</h1>");
+  res.send("<h5>Welcome to RasQora Restaurant mere website hai ye mai khud bana rhi hu</h5>");
 });
 
 app.listen(PORT, () => {
