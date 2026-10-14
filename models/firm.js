@@ -3,7 +3,7 @@ const  firmSchema = new mongoose.Schema({
     firmName: {
         type: String,
         required: true,
-        unique: true
+        
     },
     area: {
         type: String,
@@ -13,7 +13,7 @@ const  firmSchema = new mongoose.Schema({
         type:[
             {
 type: String,
-enum: ['Veg', 'Non-Veg' ]
+enum: ['veg', 'non-veg' ]
             }
         ]
     },
@@ -21,7 +21,7 @@ enum: ['Veg', 'Non-Veg' ]
         type : [
             {
                 type: String,
-                enum: [ 'South-india', 'North-india', 'chinese' , 'bakery' ] 
+                enum: [ 'south-india', 'north-india', 'chinese' , 'bakery' ] 
             }
         ]
     },
