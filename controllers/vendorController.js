@@ -1,5 +1,6 @@
 
 const vendor = require('../models/vendor.js');
+const Firm = require('../models/firm.js');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
@@ -46,6 +47,53 @@ const vendorRegister = async (req, res) => {
 };
 
 
+// const vendorLogin = async (req, res) => {
+//     const { email, password } = req.body;
+
+//     try {
+//         const vendorData = await vendor.findOne({ email });
+
+//         if (!vendorData) {
+//             return res.status(401).json({
+//                 message: 'Invalid email or password'
+//             });
+//         }
+
+//         const isPasswordCorrect = await bcrypt.compare(
+//             password,
+//             vendorData.password
+//         );
+
+//         if (!isPasswordCorrect) {
+//             return res.status(401).json({
+//                 message: 'Invalid email or password'
+//             });
+//         }
+
+//         const token = jwt.sign({ vendorId :vendorData._id} , process.env.JWT_SECRET, { expiresIn: '1h' });
+//         const vendorId = vendor._id;
+
+//         // console.log('Vendor logged in successfully');
+
+//         res.status(200).json({
+//             message: 'Vendor logged in successfully',
+//             token , vendorId
+//         });
+//         console.log( email,'this is token:', token);
+
+
+//     } catch (error) {
+//         console.error('Error logging in vendor:', error);
+
+//         res.status(500).json({
+//             message: 'Internal server error',
+//             error: error.message
+//         });
+//     }
+// };
+
+
+
 const vendorLogin = async (req, res) => {
     const { email, password } = req.body;
 
@@ -69,16 +117,26 @@ const vendorLogin = async (req, res) => {
             });
         }
 
-        const token = jwt.sign({ vendorId :vendorData._id} , process.env.JWT_SECRET, { expiresIn: '1h' });
+        // Logged-in vendor ki actual ID
+        const vendorId = vendorData._id;
+        const firm = await Firm.findOne({ vendor: vendorId }).select('_id firmName');
+        const linkedFirm = firm || vendorData.firm?.[0];
 
-        // console.log('Vendor logged in successfully');
+        const token = jwt.sign(
+            { vendorId: vendorId },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
 
         res.status(200).json({
             message: 'Vendor logged in successfully',
-            token
+            token,
+            vendorId,
+            firmId: linkedFirm?._id || null,
+            firmName: linkedFirm?.firmName || null
         });
-        console.log( email,'this is token:', token);
 
+        console.log('Logged-in Vendor ID:', vendorId);
 
     } catch (error) {
         console.error('Error logging in vendor:', error);
@@ -117,8 +175,11 @@ const getVendorById = async (req, res) => {
                 message: 'Vendor not found'
             });
         }
+        // const vendorFirmId = vendorData.firm[0]._id
+        const vendorFirmId = vendorData.firm?.[0]?._id || null;
 
-        res.status(200).json({ vendor: vendorData });
+        res.status(200).json({ vendor: vendorData , vendorFirmId});
+        // console.log(vendorData , vendorFirmId);
     } catch (error) {
         console.error('Error fetching vendor:', error);
         res.status(500).json({

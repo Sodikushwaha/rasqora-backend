@@ -27,7 +27,7 @@ image: {
 },
 
 bestSeller: {
-    type: String,
+    type: Boolean,
 },
 
 

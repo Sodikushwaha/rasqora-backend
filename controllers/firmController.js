@@ -49,6 +49,12 @@ const addFirm = async (req, res) => {
       });
     }
 
+    if(vendor.firm.length > 0){
+  return res.status(400).json({
+    message:"vendor can have only one firm"
+  })
+}
+
     const firm = new Firm({
       firmName,
       area,
@@ -57,25 +63,29 @@ const addFirm = async (req, res) => {
       offer,
       image,
       vendor: vendor._id
-    });
+    }
+  );
 
-    // await firm.save();
     const savedFirm = await firm.save();
-    vendor.firm.push(savedFirm._id);
-    await vendor.save();
 
-    return res.status(200).json({
-      message: "Firm added successfully",
-      firm: savedFirm
-    });
+const firmId = savedFirm._id;
+
+console.log("New Firm ID:", firmId); // Console par ID dikhegi
+
+vendor.firm.push(savedFirm._id);
+await vendor.save();
+
+
+return res.status(200).json({
+  message: "Firm added successfully",
+  firmId
+});
 
   } catch (error) {
 
     console.error("Add Firm Error:", error);
 
-    return res.status(500).json({
-      error: error.message
-    });
+    res.status(500).json("internal server error");
   }
 };
 

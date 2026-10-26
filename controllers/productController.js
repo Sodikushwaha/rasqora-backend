@@ -41,6 +41,9 @@ const addProduct = async (req, res) => {
             return res.status(404).json({ error: 'Firm not found' });
         }
 
+        firm.category = firm.category.map(value => value.trim().toLowerCase());
+        firm.region = firm.region.map(value => value.trim().toLowerCase());
+
         const product = new Product({
             productName,
             price,
