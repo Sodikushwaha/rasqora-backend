@@ -1,12 +1,8 @@
-const fs = require('fs');
 const path = require('path');
 const Product = require('../models/product');
 const multer = require('multer');
 const Firm = require('../models/firm');
-
-// uploads folder ka exact path
-const uploadDir = path.join(__dirname, '../uploads');
-fs.mkdirSync(uploadDir, { recursive: true });
+const uploadDir = require('../config/uploads');
 
 
 const storage = multer.diskStorage({
@@ -78,42 +74,6 @@ const getAllProducts = async (req, res) => {
 };
 
 
-// const getProductsByFirm = async (req, res) => {
-//     try {
-//         const firmId = req.params?.firmId;
-
-//         if (!firmId) {
-//             return res.status(400).json({
-//                 error: "Firm ID is required"
-//             });
-//         }
-
-// const restaurantName = firm.firmName; // Get the firm name from the firm object
-// const products =  await Product.find ({firm: firmId});
-// res.status(200).json({ restaurantName, products });
-
-
-
-
-//         const firm = await Firm.findById(firmId).populate("products");
-
-//         if (!firm) {
-//             return res.status(404).json({
-//                 error: "Firm not found"
-//             });
-//         }
-
-//         res.status(200).json({
-//             products: firm.products
-//         });
-
-//     } catch (error) {
-//         res.status(500).json({
-//             error: "Failed to retrieve products",
-//             details: error.message
-//         });
-//     }
-// };
 
 const getProductsByFirm = async (req, res) => {
     try {

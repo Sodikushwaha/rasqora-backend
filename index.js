@@ -10,12 +10,31 @@ const bodyParser = require("body-parser");
 const firmRoutes = require("./routes/firmRoutes");
 const productRoutes = require("./routes/productRoutes");
 const path = require("path");
+const uploadDir = require("./config/uploads");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(uploadDir));
+app.use(express.static(uploadDir));
+
+const fs = require("fs");
+
+app.get("/debug/uploads", (req, res) => {
+  const filename = "1793118011505-901367609.png";
+  const filePath = path.join(uploadDir, filename);
+
+  res.json({
+    uploadDir,
+    folderExists: fs.existsSync(uploadDir),
+    imageExists: fs.existsSync(filePath),
+    sampleFiles: fs.existsSync(uploadDir)
+      ? fs.readdirSync(uploadDir).slice(0, 10)
+      : [],
+  });
+});
+
 
 const PORT = process.env.PORT || 8000;
 

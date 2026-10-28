@@ -47,53 +47,6 @@ const vendorRegister = async (req, res) => {
 };
 
 
-// const vendorLogin = async (req, res) => {
-//     const { email, password } = req.body;
-
-//     try {
-//         const vendorData = await vendor.findOne({ email });
-
-//         if (!vendorData) {
-//             return res.status(401).json({
-//                 message: 'Invalid email or password'
-//             });
-//         }
-
-//         const isPasswordCorrect = await bcrypt.compare(
-//             password,
-//             vendorData.password
-//         );
-
-//         if (!isPasswordCorrect) {
-//             return res.status(401).json({
-//                 message: 'Invalid email or password'
-//             });
-//         }
-
-//         const token = jwt.sign({ vendorId :vendorData._id} , process.env.JWT_SECRET, { expiresIn: '1h' });
-//         const vendorId = vendor._id;
-
-//         // console.log('Vendor logged in successfully');
-
-//         res.status(200).json({
-//             message: 'Vendor logged in successfully',
-//             token , vendorId
-//         });
-//         console.log( email,'this is token:', token);
-
-
-//     } catch (error) {
-//         console.error('Error logging in vendor:', error);
-
-//         res.status(500).json({
-//             message: 'Internal server error',
-//             error: error.message
-//         });
-//     }
-// };
-
-
-
 const vendorLogin = async (req, res) => {
     const { email, password } = req.body;
 

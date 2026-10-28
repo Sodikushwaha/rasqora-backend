@@ -7,12 +7,7 @@ const verifyToken = require('../middlewares/verifyToken');
  router.post('/add-firm', verifyToken, firmController.addFirm);
  router.get('/get-firms', firmController.getAllFirms);
  router.get('/get-firms/:vendorId', firmController.getFirmsByVendor);
+ router.put('/update-image/:firmId', verifyToken, firmController.updateFirmImage);
  router.delete('/delete-firm/:firmId', firmController.deleteFirmById);
- 
- router.get('/uploads/:imageName',(req, res) => {
-    const imageName = req.params.imageName;
-    res.setHeader('Content-Type', 'image/jpeg');
-    res.sendFile(path.join(__dirname, '../uploads', imageName));
-  
- });
+
  module.exports = router;
