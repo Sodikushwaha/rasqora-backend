@@ -81,6 +81,8 @@ const addFirm = async (req, res) => {
     });
 
     const savedFirm = await firm.save();
+    console.log("Upload directory:", uploadDir);
+console.log("Uploaded file:", req.file);
 
     // Link firm to vendor
     vendor.firm.push(savedFirm._id);
@@ -96,13 +98,22 @@ const addFirm = async (req, res) => {
       firmId: savedFirm._id.toString(),
       firmName: savedFirm.firmName,
     });
-  } catch (error) {
-    console.error("Add Firm Error:", error.stack || error);
+  // } catch (error) {
+  //   console.error("Add Firm Error:", error.stack || error);
 
-    return res.status(500).json({
-      message: "Internal server error",
-    });
-  }
+  //   return res.status(500).json({
+  //     message: "Internal server error",
+  //   });
+  // }
+  } catch (error) {
+  console.error("Add Firm Error Name:", error.name);
+  console.error("Add Firm Error Message:", error.message);
+  console.error("Add Firm Error Details:", error);
+
+  return res.status(500).json({
+    message: "Internal server error",
+  });
+}
 };
 
 // Get all firms
