@@ -1,25 +1,6 @@
-const path = require('path');
 const Product = require('../models/product');
-const multer = require('multer');
 const Firm = require('../models/firm');
-const uploadDir = require('../config/uploads');
-
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-
-  filename: function (req, file, cb) {
-    const uniqueName =
-      Date.now() + "-" + Math.round(Math.random() * 1e9);
-
-    cb(null, uniqueName + path.extname(file.originalname));
-  },
-});
-
-
-const upload = multer({ storage: storage });
+const cloudinaryImageUpload = require('../middlewares/cloudinaryImageUpload');
 
 const addProduct = async (req, res) => {
     try {
@@ -191,4 +172,13 @@ const updateProduct = async (req, res) => {
 
 
 
-module.exports ={ addProduct:[upload.single('image') , addProduct]  , getProductsByFirm  , getAllProducts , deleteProduct , updateProduct };
+module.exports = {
+    addProduct: [...cloudinaryImageUpload('rasqora/products'), addProduct],
+    getProductsByFirm,
+    getAllProducts,
+    deleteProduct,
+    updateProduct: [
+        ...cloudinaryImageUpload('rasqora/products'),
+        updateProduct
+    ]
+};

@@ -1,14 +1,16 @@
-# Backend uploads
+# Image uploads
 
-Uploaded firm and product images use the directory configured by `UPLOADS_DIR`.
-If it is not set, the backend uses `backend/uploads` for local development.
+New firm and product image uploads are stored in Cloudinary. Configure these
+backend environment variables locally and on Render:
 
-For the Render backend service, attach a persistent disk mounted at
-`/var/data`, set the `UPLOADS_DIR` environment variable to
-`/var/data/uploads`, and redeploy. The backend serves images at
-`/uploads/<filename>`.
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
 
-Images that were already lost from Render's temporary filesystem cannot be
-restored from their database filenames. Upload those images again after the
-persistent disk is mounted. A logged-in vendor can replace their firm image
-from the dashboard's **Replace Firm Image** form after the disk is configured.
+The backend saves each uploaded image's secure Cloudinary URL in MongoDB.
+Existing records that contain only a filename continue to resolve through the
+legacy `/uploads/<filename>` endpoint; images missing from that local folder
+must be uploaded again to Cloudinary.
+
+The local `backend/uploads` folder remains available for legacy images and
+local development. New uploads no longer depend on Render's temporary disk.

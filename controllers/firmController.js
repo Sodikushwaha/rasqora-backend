@@ -2,25 +2,7 @@
 
 const Firm = require("../models/firm.js");
 const Vendor = require("../models/vendor.js");
-const multer = require("multer");
-const path = require("path");
-const uploadDir = require("../config/uploads");
-
-// Multer storage configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-
-  filename: function (req, file, cb) {
-    const uniqueName =
-      Date.now() + "-" + Math.round(Math.random() * 1e9);
-
-    cb(null, uniqueName + path.extname(file.originalname));
-  },
-});
-
-const upload = multer({ storage });
+const cloudinaryImageUpload = require("../middlewares/cloudinaryImageUpload");
 
 // Add Firm
 const addFirm = async (req, res) => {
@@ -81,8 +63,6 @@ const addFirm = async (req, res) => {
     });
 
     const savedFirm = await firm.save();
-    console.log("Upload directory:", uploadDir);
-console.log("Uploaded file:", req.file);
 
     // Link firm to vendor
     vendor.firm.push(savedFirm._id);
@@ -228,8 +208,11 @@ const deleteFirmById = async (req, res) => {
 };
 
 module.exports = {
-  addFirm: [upload.single("image"), addFirm],
-  updateFirmImage: [upload.single("image"), updateFirmImage],
+  addFirm: [...cloudinaryImageUpload("rasqora/firms"), addFirm],
+  updateFirmImage: [
+    ...cloudinaryImageUpload("rasqora/firms"),
+    updateFirmImage,
+  ],
   getAllFirms,
   getFirmsByVendor,
   deleteFirmById,
