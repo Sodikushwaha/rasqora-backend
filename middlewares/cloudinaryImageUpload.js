@@ -1,14 +1,39 @@
+const path = require("path");
 const multer = require("multer");
 const { v2: cloudinary } = require("cloudinary");
+const uploadDir = require("../config/uploads");
 
-const upload = multer({
-  storage: multer.memoryStorage(),
-});
+const hasCloudinaryConfig = () =>
+  Boolean(
+    process.env.CLOUDINARY_CLOUD_NAME &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET
+  );
+
+const isLocalUploadMode =
+  process.env.NODE_ENV !== "production" && !hasCloudinaryConfig();
+
+const storage = isLocalUploadMode
+  ? multer.diskStorage({
+      destination: (_req, _file, callback) => callback(null, uploadDir),
+      filename: (_req, file, callback) => {
+        const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+        callback(null, uniqueName + path.extname(file.originalname));
+      },
+    })
+  : multer.memoryStorage();
+
+const upload = multer({ storage });
 
 const cloudinaryImageUpload = (folder) => [
   upload.single("image"),
   (req, res, next) => {
     if (!req.file) {
+      return next();
+    }
+
+    if (isLocalUploadMode) {
+      req.file.filename = `/uploads/${req.file.filename}`;
       return next();
     }
 
